@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM docker.io/alpine:3.20.3
 
 ARG BUILD_DATE
 
