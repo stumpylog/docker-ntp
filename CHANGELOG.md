@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated base Alpine image to 3.21.2
+- Updates base Alpine image to 3.21.2
+
+### Added
+
+- Dependabot configuration for Docker
 
 ## [1.0.0] - 2024-11-27
 
