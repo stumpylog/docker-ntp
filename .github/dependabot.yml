@@ -4,7 +4,7 @@ version: 2
 updates:
   # Enable updates for GitHub Actions
   - package-ecosystem: "github-actions"
-    target-branch: "main"
+    target-branch: "develop"
     directory: "/"
     schedule:
       # Check for updates to GitHub Actions every week
@@ -17,7 +17,7 @@ updates:
           - "patch"
   # Enable version updates for Docker
   - package-ecosystem: "docker"
-    target-branch: "main"
+    target-branch: "develop"
     directory: "/"
     # Check for updates once a week
     schedule:
