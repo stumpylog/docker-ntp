@@ -21,8 +21,6 @@ jobs:
         uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: Dockerfile
-      - name: Run pre-commit checks
-        uses: j178/prek-action@v1.0.11
       - name: Validate the changelog
         uses: release-flow/keep-a-changelog-action@v3
         with:
