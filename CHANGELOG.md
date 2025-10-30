@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+
+- Dockerfile linting via Hadolint action
+- Docker image security scanning via Trivy
+- Validation of the CHANGELOG format
+
 ### Changed
 
 - Updates base Alpine image to 3.22.2

@@ -1,7 +1,6 @@
 # This file configures pre-commit hooks.
 # See https://pre-commit.com/ for general information
 # See https://pre-commit.com/hooks.html for a listing of possible hooks
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -28,3 +27,9 @@ repos:
     rev: "v0.11.0.1"
     hooks:
       - id: shellcheck
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.20.0
+    hooks:
+      - id: yamlfmt
+        types:
+          - yaml
