@@ -23,7 +23,7 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      actions:
+      docker:
         update-types:
           - "major"
           - "minor"
