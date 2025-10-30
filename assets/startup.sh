@@ -1,22 +1,22 @@
 #!/bin/sh
+set -e
 
 DEFAULT_NTP="time.cloudflare.com"
 CHRONY_CONF_FILE="/etc/chrony/chrony.conf"
 
-# confirm correct permissions on chrony run directory
+# Confirm correct permissions on chrony run directory
 if [ -d /run/chrony ]; then
   chown -R chrony:chrony /run/chrony
-  chmod o-rx /run/chrony
-  # remove previous pid file if it exist
-  rm -f /var/run/chrony/chronyd.pid
+  chmod 750 /run/chrony
 fi
 
-# confirm correct permissions on chrony variable state directory
+# Confirm correct permissions on chrony variable state directory
 if [ -d /var/lib/chrony ]; then
   chown -R chrony:chrony /var/lib/chrony
+  chmod 750 /var/lib/chrony
 fi
 
-## dynamically populate chrony config file.
+# Dynamically populate chrony config file
 {
   echo "# https://github.com/cturra/docker-ntp"
   echo
@@ -24,58 +24,70 @@ fi
   echo "# located at /opt/startup.sh"
   echo
   echo "# time servers provided by NTP_SERVERS environment variables."
-} > ${CHRONY_CONF_FILE}
+} > "${CHRONY_CONF_FILE}"
 
+# Set NTP servers (default if not provided)
+NTP_SERVERS="${NTP_SERVERS:-${DEFAULT_NTP}}"
 
-# NTP_SERVERS environment variable is not present, so populate with default server
-if [ -z "${NTP_SERVERS}" ]; then
-  NTP_SERVERS="${DEFAULT_NTP}"
-fi
-
-# LOG_LEVEL environment variable is not present, so populate with chrony default (0)
+# Set log level with validation
 # chrony log levels: 0 (informational), 1 (warning), 2 (non-fatal error) and 3 (fatal error)
-if [ -z "${LOG_LEVEL}" ]; then
+LOG_LEVEL="${LOG_LEVEL:-0}"
+if [ "${LOG_LEVEL}" -lt 0 ] || [ "${LOG_LEVEL}" -gt 3 ]; then
+  echo "Warning: LOG_LEVEL ${LOG_LEVEL} is invalid. Using default (0)." >&2
   LOG_LEVEL=0
-else
-  # confirm log level is between 0-3, since these are the only log levels supported
-  if [ "${LOG_LEVEL}" -gt 3 ]; then
-    # level outside of supported range, let's set to default (0)
-    LOG_LEVEL=0
-  fi
 fi
 
+# Process NTP servers
 IFS=","
-for N in $NTP_SERVERS; do
-  # strip any quotes found before or after ntp server
-  N_CLEANED=${N//\"}
+for N in ${NTP_SERVERS}; do
+  # Strip whitespace and quotes
+  N_CLEANED=$(echo "${N}" | tr -d '"' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-  # check if ntp server has a 127.0.0.0/8 address (RFC3330) indicating it's
+  # Skip empty entries
+  [ -z "${N_CLEANED}" ] && continue
+
+  # Check if ntp server has a 127.0.0.0/8 address (RFC3330) indicating it's
   # the local system clock
-  if [[ "${N_CLEANED}" == "127\."* ]]; then
-    echo "server "${N_CLEANED} >> ${CHRONY_CONF_FILE}
-    echo "local stratum 10"    >> ${CHRONY_CONF_FILE}
-
-  # found external time servers
-  else
-    if [[ "${ENABLE_NTS:-false}" = true ]]; then
-      echo "server "${N_CLEANED}" iburst nts" >> ${CHRONY_CONF_FILE}
-    else
-      echo "server "${N_CLEANED}" iburst" >> ${CHRONY_CONF_FILE}
-    fi
-  fi
+  case "${N_CLEANED}" in
+    127.*)
+      echo "server ${N_CLEANED}" >> "${CHRONY_CONF_FILE}"
+      echo "local stratum 10" >> "${CHRONY_CONF_FILE}"
+      ;;
+    *)
+      # External time servers
+      if [ "${ENABLE_NTS:-false}" = "true" ]; then
+        echo "server ${N_CLEANED} iburst nts" >> "${CHRONY_CONF_FILE}"
+      else
+        echo "server ${N_CLEANED} iburst" >> "${CHRONY_CONF_FILE}"
+      fi
+      ;;
+  esac
 done
 
-# final bits for the config file
+# Final bits for the config file
 {
   echo
   echo "driftfile /var/lib/chrony/chrony.drift"
   echo "makestep 0.1 3"
-  if [ "${NOCLIENTLOG:-false}" = true ]; then
+  if [ "${NOCLIENTLOG:-false}" = "true" ]; then
     echo "noclientlog"
   fi
   echo
+  echo "# Allow access from containers/local networks"
   echo "allow all"
-} >> ${CHRONY_CONF_FILE}
+} >> "${CHRONY_CONF_FILE}"
 
-## startup chronyd in the foreground
-exec /usr/sbin/chronyd -u chrony -d -x -L ${LOG_LEVEL}
+# Verify config file was created successfully
+if [ ! -s "${CHRONY_CONF_FILE}" ]; then
+  echo "Error: Failed to create chrony configuration file" >&2
+  exit 1
+fi
+
+# Validate chrony configuration
+if ! /usr/sbin/chronyd -p -f "${CHRONY_CONF_FILE}"; then
+  echo "Error: Invalid chrony configuration" >&2
+  exit 1
+fi
+
+# Startup chronyd in the foreground
+exec /usr/sbin/chronyd -u chrony -d -x -L "${LOG_LEVEL}"
