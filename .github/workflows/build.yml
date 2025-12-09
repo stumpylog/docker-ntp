@@ -16,7 +16,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6.0.1
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.3.0
         with:
@@ -43,7 +43,7 @@ jobs:
           echo "ghcr-repository=${ghcr_name}" >> $GITHUB_OUTPUT
       - name: Gather Docker metadata
         id: docker-meta
-        uses: docker/metadata-action@v5.8.0
+        uses: docker/metadata-action@v5.10.0
         with:
           images: |
             ghcr.io/${{ steps.set-ghcr-repository.outputs.ghcr-repository }}
@@ -55,7 +55,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
       - name: Checkout
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6.0.1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.11.1
       - name: Set up QEMU
@@ -87,7 +87,7 @@ jobs:
           output: "trivy-results.sarif"
           exit-code: "0"
       - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: "trivy-results.sarif"
       - name: Get latest release info
