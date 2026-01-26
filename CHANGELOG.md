@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Image now builds for `linux/arm64` platform as well
 
+### Changed
+
+- Updates base Alpine image to 3.23.2
+
 ## [1.4.0] - 2025-12-09
 
 ### Added
