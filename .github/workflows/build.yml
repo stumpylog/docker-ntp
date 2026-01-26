@@ -114,7 +114,7 @@ jobs:
         with:
           sarif_file: "trivy-results.sarif"
   release:
-    name: Build Docker image for ${{ github.ref_name }}
+    name: Build release for ${{ github.ref_name }}
     if: ${{ github.ref_type == 'tag' }}
     runs-on: ubuntu-24.04
     permissions:
