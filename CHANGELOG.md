@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `persist-credentials: false` to all `actions/checkout` steps to prevent credential leakage into artifacts
 - Replace `ncipollo/release-action` with native `gh release create` to reduce third-party action dependencies
 - Fix template injection risk in release job by moving `github.ref_name` and step outputs into environment variables before use in `run:` steps
-- Correct `aquasecurity/trivy-action` tag from non-existent `0.34.1` to `v0.34.0`
+- Add `step-security/harden-runner` to all jobs to monitor outbound network calls during CI runs
+- Enable SBOM and provenance attestations on pushed Docker images via `docker/build-push-action`
 
 ## [1.5.0] - 2026-01-26
 
