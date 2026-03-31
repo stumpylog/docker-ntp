@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix template injection risk in release job by moving `github.ref_name` and step outputs into environment variables before use in `run:` steps
 - Add `step-security/harden-runner` to all jobs to monitor outbound network calls during CI runs
 - Enable SBOM and provenance attestations on pushed Docker images via `docker/build-push-action`
+- Reduce `build-docker-image` job permissions to `contents: read` and `packages: write`, removing over-provisioned `attestations: write`, `id-token: write`, `contents: write`, and `security-events: write`
 
 ## [1.5.0] - 2026-01-26
 

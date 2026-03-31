@@ -36,11 +36,8 @@ jobs:
     name: Build Docker image for ${{ github.ref_name }}
     runs-on: ubuntu-24.04
     permissions:
-      attestations: write
-      contents: write
-      id-token: write
+      contents: read
       packages: write
-      security-events: write
     needs:
       - lint
     steps:
@@ -98,6 +95,7 @@ jobs:
     name: Scan Docker image for ${{ github.ref_name }}
     runs-on: ubuntu-24.04
     permissions:
+      contents: read
       security-events: write
     needs:
       - lint
