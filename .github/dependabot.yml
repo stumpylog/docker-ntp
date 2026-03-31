@@ -1,5 +1,4 @@
 # https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/configuration-options-for-dependency-updates#package-ecosystem
-
 version: 2
 updates:
   # Enable updates for GitHub Actions
@@ -9,22 +8,22 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every week
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       actions:
-        update-types:
-          - "major"
-          - "minor"
-          - "patch"
+        patterns:
+          - "*"
   # Enable version updates for Docker
   - package-ecosystem: "docker"
     target-branch: "develop"
     directory: "/"
-    # Check for updates once a week
     schedule:
+      # Check for updates once a week
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       docker:
-        update-types:
-          - "major"
-          - "minor"
-          - "patch"
+        patterns:
+          - "*"

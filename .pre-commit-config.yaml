@@ -33,3 +33,11 @@ repos:
       - id: yamlfmt
         types:
           - yaml
+  - repo: https://github.com/woodruffw/zizmor-pre-commit
+    rev: v1.23.1
+    hooks:
+      - id: zizmor
+        args:
+          - "--no-progress"
+          - "--quiet"
+          - "--min-severity=low"

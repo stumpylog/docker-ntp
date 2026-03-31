@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Dependabot now groups all updates for each ecosystem into a single PR using `patterns: ["*"]`
+- Add 7-day cooldown to Dependabot updates for both GitHub Actions and Docker ecosystems
+
+### Security
+
+- Pin all GitHub Actions to full commit SHAs to prevent supply chain attacks
+- Add `persist-credentials: false` to all `actions/checkout` steps to prevent credential leakage into artifacts
+- Replace `ncipollo/release-action` with native `gh release create` to reduce third-party action dependencies
+- Fix template injection risk in release job by moving `github.ref_name` and step outputs into environment variables before use in `run:` steps
+- Correct `aquasecurity/trivy-action` tag from non-existent `0.34.1` to `v0.34.0`
+
 ## [1.5.0] - 2026-01-26
 
 ### Added
