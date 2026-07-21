@@ -1,4 +1,4 @@
-FROM docker.io/alpine:3.23.3
+FROM docker.io/alpine:3.24.1
 
 # install chrony
 RUN apk add --no-cache chrony=4.8-r2 tzdata=2026c-r0
