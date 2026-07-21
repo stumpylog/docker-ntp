@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Run CI lint/build/scan on pull requests (e.g. Dependabot PRs) without publishing an image
 
+### Changed
+
+- Updates base Alpine image to 3.24.1, bumping `chrony` to `4.8-r7`
+
 ## [1.6.0] - 2026-03-31
 
 ### Changed
