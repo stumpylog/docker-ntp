@@ -1,7 +1,7 @@
 FROM docker.io/alpine:3.24.1
 
 # install chrony
-RUN apk add --no-cache chrony=4.8-r2 tzdata=2026c-r0
+RUN apk add --no-cache chrony=4.8-r7 tzdata=2026c-r0
 
 # script to configure/startup chrony (ntp)
 COPY assets/startup.sh /opt/startup.sh
