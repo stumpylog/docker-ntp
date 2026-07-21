@@ -10,14 +10,13 @@ Docker container running [chrony](https://chrony-project.org/) NTP server on Alp
 
 ```bash
 # Build the Docker image locally
-./build.sh
+docker build -t docker-ntp .
 
 # Run the container locally
-./run.sh
+docker run -d --name ntp -p 123:123/udp docker-ntp
 
 # Build multi-architecture image (requires docker buildx)
-./build-multiarch.sh           # dry run (no push)
-./build-multiarch.sh --go-time # build and push to registry
+docker buildx build --platform linux/amd64,linux/arm64 -t docker-ntp .
 
 # Using docker-compose
 docker compose up -d ntp
@@ -26,7 +25,7 @@ docker compose logs ntp
 
 ## Configuration
 
-All configuration is done via environment variables, defined in the `vars` file for local scripts:
+All configuration is done via environment variables, set via `docker run -e` flags or the `environment:` block in `docker-compose.yml`:
 
 - `NTP_SERVERS` - Comma-delimited list of NTP servers (default: `time.cloudflare.com`)
 - `ENABLE_NTS` - Enable Network Time Security when `true`
@@ -48,7 +47,6 @@ GitHub Actions workflow (`.github/workflows/build.yml`) runs on pushes to `main`
 ```
 Dockerfile           # Alpine-based image with chrony
 assets/startup.sh    # Entrypoint: generates chrony.conf from env vars, starts chronyd
-vars                 # Local development configuration variables
 docker-compose.yml   # Compose file for local development
 ```
 
